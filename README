@@ -1,1 +1,65 @@
+# Big Data Analytics Final Project Report
 
+## Developing a Movie Recommender System Using Apache Spark
+
+### Group Number: 8  
+**Group Members:** Janelle Bauske, Sandra Chiwike, Nandita Ghildyal
+
+## 1. Introduction
+Recommender systems are vital in industries like e-commerce, social media, and streaming, helping users navigate vast information. Movie recommender systems personalize viewing experiences by analyzing user interactions, demographic data, and item attributes such as genres, actors, and directors. Despite their utility, they face challenges like data sparsity and cold-start problems, which limit their ability to provide accurate and diverse recommendations, especially for new users or items (Harper & Konstan, 2015).
+
+To address these challenges, two main approaches are used: collaborative filtering (CF) and content-based filtering (CB). CF leverages user-item interaction patterns for personalized recommendations but struggles with sparse data. CB relies on item attributes like genres and plot summaries, working well without user interaction data but often generating repetitive suggestions that hinder novelty and exploration (Kumar Singh, 2020). While both methods are effective, they are insufficient when used independently in complex movie recommendation scenarios.
+
+The primary goal of this project is to build a hybrid recommender system that combines collaborative filtering with metadata-driven content-based recommendations. This approach leverages the strengths of both methods to enhance personalization, accuracy, and diversity while addressing data sparsity and cold-start problems. By effectively capturing user behavior through collaborative filtering and utilizing rich metadata for content-based insights, the system ensures relevant and novel recommendations, even for users with minimal interaction history.
+
+## 2. Data
+The **MovieLens User Review** and **MovieLens Tag Genome** datasets served as the foundation for our data integration and enrichment process. To implement a hybrid recommender system, we combined user ratings with detailed movie metadata pulled from the IMDb API. The original dataset included essential information such as user demographics, genres, timestamps, average ratings, and movie tags.
+
+For additional movie information, we extracted each unique IMDb ID from the MovieLens dataset to create pull requests for the IMDb API. This pulled data included cast members, localized titles, runtimes, IMDb ratings, plot outlines, and director names. The process was automated using parallel processing with a thread pool. The retrieved data was then converted to a Spark DataFrame with a defined schema for seamless integration with the MovieLens dataset.
+
+The datasets were then merged through an inner join on the IMDb ID field, creating a unified dataset of **916,355 rows and 20 columns**.
+
+### 2.1 Normal Distribution for User vs IMDb Ratings
+IMDb ratings (orange) are tightly clustered around 0.8, indicating consistency, while user ratings (blue) show more variability, peaking near 0.9. To align the scales, user ratings (originally out of 5) were normalized to match IMDb ratings (out of 10). 
+
+### 2.3 Occupation-Based Ratings for Popular Genres
+The ratings reveal distinct genre preferences across occupations. Writers show a strong liking for **Action|Sci-Fi|Thriller**, while Programmers prefer **Mystery**. Sales and Marketing users rate **Action|Sci-Fi|Thriller** highly, and Artists favor **Drama**. These insights highlight how occupation-specific tastes can inform more personalized film recommendations.
+
+### 2.4 Gender-Occupation Based Ratings
+Male users show ratings for genres with **Action** and **War**, while female users prefer **Comedy, Film Noir**, and other genres. This provides insights into gender-specific preferences across genres and showcases the need for targeted recommendation systems that account for varying levels of engagement in different genres.
+
+### 2.5 Age-Based Genre Preferences
+Both younger and older users show a general trend of preference towards **Drama, Comedy, and Action movies**.
+
+### 2.6 Genre Distribution across Zip Code Regions
+Regions with the most active users rate **Drama, Comedy, and Action** the highest.
+
+### 2.7 Rating Trends by Gender by Movie Release Decade
+Both genders rate older movies (1950s) higher than modern films. Female users show a notable peak for films from the **1910s**, suggesting historical film appreciation.
+
+## 3. Methods
+In our implementation of a movie recommender system, we developed and tested **over 16 models** through the preliminary, intermediate, and final stages of the project. Each took a different approach to combining collaborative and content-based filtering methods.
+
+### 3.1 Architecture for the Final Model
+Our final recommendation model integrates **feature engineering** with **collaborative filtering using ALS (Alternating Least Squares)**. Steps include:
+- Converting Pandas DataFrame into a **PySpark DataFrame**.
+- Applying **StringIndexer** to transform categorical features (Gender, Occupation).
+- Using **VectorAssembler** to prepare features for model training.
+- Implementing **ALS for collaborative filtering**, learning latent factors for users and movies.
+- Adjusting the hybrid weighting approach to **40% collaborative filtering, 40% content-based scores, and 20% IMDb ratings**.
+- Optimizing cold-start recommendations by adjusting alpha values for new users.
+
+## 4. Results
+We evaluated our model using **Root Mean Square Error (RMSE)** and **Mean Absolute Error (MAE)**:
+- Initial Model: **RMSE = 0.90**, **MAE = 0.72**
+- Final Model: **RMSE = 0.83**, **MAE = 0.46**
+
+A significant reduction in RMSE and MAE indicates improved accuracy. 
+
+**Catalog Coverage:** Our initial model recommended **94.11%** of titles (471,200 of 500,000 movies), while the final model slightly reduced coverage to **89.55%**, indicating a shift towards more popular recommendations.
+
+## 5. Conclusion
+Our hybrid recommender system successfully integrates **collaborative filtering (ALS)** and **content-based filtering (metadata-driven)** to enhance movie recommendations. Improvements in **prediction accuracy, personalization, and coverage** demonstrate the effectiveness of this approach. Future work includes **fine-tuning hybrid weighting strategies, improving cold-start handling, and incorporating deep learning techniques** to further refine recommendations.
+
+
+This project demonstrates how **Apache Spark** and **machine learning techniques** can be leveraged to build **scalable movie recommender systems**. 🚀
