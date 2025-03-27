@@ -7,28 +7,20 @@ Original file is located at
     https://colab.research.google.com/drive/1pbB72GlFEp9gfofyi1p_Naa4Vrp4XC4t
 """
 
-!pip install pyspark -q
 
-!pyspark --version
-
-from google.colab import drive
-
-# Mount the Google Drive
-drive.mount('/content/drive')
 
 """# Read data into a Spark dataframe"""
-
-#!ls /content/drive/MyDrive
 
 import pyspark
 from pyspark.sql import SparkSession
 spark = SparkSession\
         .builder\
         .appName("IMDb Details")\
+        .config("spark.hadoop.security.authentication", "simple") \
         .getOrCreate()
 
 # Read Parquet file into a Spark DataFrame
-df_parquet = spark.read.parquet('/content/drive/MyDrive/movie-recommendation-system/User-Movie-data.parquet')
+df_parquet = spark.read.parquet('/User-Movie-data.parquet')
 
 df_parquet.show(5)
 df_parquet.count()
@@ -1009,7 +1001,6 @@ def predict_rating(user_input, cv_model, lr_model, user_item_matrix, metadata):
     else:
         return "No prediction available."
 
-!pip install fastapi uvicorn
 
 from fastapi import FastAPI
 from pydantic import BaseModel
