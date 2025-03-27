@@ -4,7 +4,6 @@ This repository contains the implementation of a robust **Hybrid Movie Recommend
 
 ## Table of Contents
 - [Overview](#overview)
-- [Folder Structure](#folder-structure)
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
@@ -19,11 +18,6 @@ The system predicts movie ratings by dynamically choosing or hybridizing ALS and
 2. **Metadata-driven predictions** via LR for new users or incomplete datasets.
 3. A hybrid model that optimally combines predictions from ALS and LR for enhanced accuracy.
 
----
-
-## Folder Structure
-
-├── pycache/                    # Compiled Python files ├── data/                           # Raw and preprocessed datasets │   ├── raw_data.parquet            # Original data files │   ├── preprocessed_data.parquet   # Cleaned and feature-engineered dataset ├── models/                         # Trained machine learning models │   ├── als/                        # Saved ALS model │   ├── lr/                         # Saved Linear Regression model ├── notebooks/                      # Jupyter Notebooks for data analysis and modeling │   ├── Data_Pulling_Preprocessing_v8_0.ipynb  # Data preprocessing and feature engineering │   ├── Hybrid_Recommender_EDA_Modelling.ipynb # Exploratory data analysis and hybrid model development ├── app.py                          # FastAPI implementation with endpoints ├── User-Movie-data.parquet         # Main dataset for training/prediction ├── README.md                       # Documentation (this file) ├── requirements.txt                # Python dependencies for the project
 ---
 
 ## Features
