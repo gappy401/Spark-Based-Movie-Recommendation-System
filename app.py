@@ -10,17 +10,13 @@ from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 from pyspark.ml import Pipeline
 from pyspark.ml.feature import StringIndexer, OneHotEncoder, Tokenizer, StopWordsRemover, HashingTF, IDF, VectorAssembler, Normalizer
-from pyspark.sql import SparkSession
-from pyspark.sql import functions as F
 from pyspark.sql.types import IntegerType, DoubleType, StringType
 from pyspark.ml.feature import StringIndexer, OneHotEncoder, VectorAssembler
 from pyspark.ml import Pipeline
 from pyspark.ml.recommendation import ALS
 from pyspark.ml.evaluation import RegressionEvaluator
 from pyspark.ml.tuning import ParamGridBuilder, CrossValidator
-from pyspark.ml.regression import RandomForestRegressor, GBTRegressor
 from pyspark.ml.feature import Bucketizer
-from pyspark.sql import functions as F
 from pyspark.sql.types import IntegerType
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -35,6 +31,7 @@ from pyspark.ml.recommendation import ALSModel
 from pyspark.ml.regression import LinearRegressionModel
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import lit, col
+from sklearn.preprocessing import MinMaxScaler
 
 
 
@@ -56,8 +53,6 @@ df_parquet_cleaned = df_parquet \
 
 #dropping the 'director' column
 df_parquet_cleaned = df_parquet_cleaned.drop('director')
-df_parquet_cleaned.show(5)
-
 """##### This code defines a User Defined Function (UDF) to map occupation codes to their corresponding occupation names using a dictionary. It then applies this UDF to a DataFrame (`df_parquet_cleaned`) to add a new column, `Occupation_Name`, and displays the first 5 rows of the updated DataFrame. I picked this up from the meta data
    Occupation Codes
    
@@ -138,10 +133,6 @@ plt.title('IMDb Rating Distribution')
 plt.xlabel('IMDb Rating')
 plt.ylabel('Frequency')
 plt.show()
-
-from sklearn.preprocessing import MinMaxScaler
-import matplotlib.pyplot as plt
-import seaborn as sns
 
 
 scaler = MinMaxScaler()
