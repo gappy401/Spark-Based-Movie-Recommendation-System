@@ -8,6 +8,20 @@ from pyspark.sql.functions import col, lit, udf
 from pyspark.sql.types import StringType
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
+from pyspark.ml import Pipeline
+from pyspark.ml.feature import StringIndexer, OneHotEncoder, Tokenizer, StopWordsRemover, HashingTF, IDF, VectorAssembler, Normalizer
+from pyspark.sql import SparkSession
+from pyspark.sql import functions as F
+from pyspark.sql.types import IntegerType, DoubleType, StringType
+from pyspark.ml.feature import StringIndexer, OneHotEncoder, VectorAssembler
+from pyspark.ml import Pipeline
+from pyspark.ml.recommendation import ALS
+from pyspark.ml.evaluation import RegressionEvaluator
+from pyspark.ml.tuning import ParamGridBuilder, CrossValidator
+from pyspark.ml.regression import RandomForestRegressor, GBTRegressor
+from pyspark.ml.feature import Bucketizer
+from pyspark.sql import functions as F
+from pyspark.sql.types import IntegerType
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
@@ -15,6 +29,12 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.preprocessing import StandardScaler
 from sklearn.manifold import TSNE
+from fastapi import FastAPI
+from pydantic import BaseModel
+from pyspark.ml.recommendation import ALSModel
+from pyspark.ml.regression import LinearRegressionModel
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import lit, col
 
 
 
@@ -389,17 +409,6 @@ Because it converts Text to Numeric Values:
 *   Prepares for One-Hot Encoding: We don't directly feed indexed values into the model because they might introduce an unintended order. Instead, we pass the indexed values into OneHotEncoder, which creates independent binary features.
 """
 
-from pyspark.sql import SparkSession
-from pyspark.sql import functions as F
-from pyspark.sql.types import IntegerType, DoubleType, StringType
-from pyspark.ml.feature import StringIndexer, OneHotEncoder, VectorAssembler
-from pyspark.ml import Pipeline
-from pyspark.ml.recommendation import ALS
-from pyspark.ml.evaluation import RegressionEvaluator
-from pyspark.ml.tuning import ParamGridBuilder, CrossValidator
-from pyspark.ml.regression import RandomForestRegressor, GBTRegressor
-from pyspark.ml.feature import Bucketizer
-
 total_rows= df_parquet_cleaned.count()
 half_rows = total_rows // 10
 df=df_parquet_cleaned.limit(half_rows)
@@ -631,11 +640,6 @@ After breaking the text into individual words, the code removes common words lik
 
 The final step applies TF-IDF (Term Frequency-Inverse Document Frequency) which gives higher weight to words that appear frequently in a specific plot but rarely in other plots, making them good distinguishing features. For example, words like "superhero" or "zombie" might be highly weighted because they strongly indicate specific movie genres.
 """
-
-from pyspark.ml import Pipeline
-from pyspark.ml.feature import StringIndexer, OneHotEncoder, Tokenizer, StopWordsRemover, HashingTF, IDF, VectorAssembler, Normalizer
-from pyspark.sql import functions as F
-from pyspark.sql.types import IntegerType
 
 def define_pipeline():
     # StringIndexers for categorical features
@@ -978,14 +982,6 @@ def predict_rating(user_input, cv_model, lr_model, user_item_matrix, metadata):
 
     else:
         return "No prediction available."
-
-
-from fastapi import FastAPI
-from pydantic import BaseModel
-from pyspark.ml.recommendation import ALSModel
-from pyspark.ml.regression import LinearRegressionModel
-from pyspark.sql import SparkSession
-from pyspark.sql.functions import lit, col
 
 # Initialize Spark session
 spark = SparkSession.builder.appName("RecommendationAPI").getOrCreate()
